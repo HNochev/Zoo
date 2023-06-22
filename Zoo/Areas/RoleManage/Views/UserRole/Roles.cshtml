@@ -1,0 +1,36 @@
+﻿@using Zoo.Core.Models.Users
+@model UserRolesModel
+@{
+    ViewData["Title"] = "Роли на потребителя";
+    var items = (List<SelectListItem>)ViewBag.RoleItems;
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <form id="roles" method="post">
+            <input type="hidden" name="UserId" value="@Model.UserId" />
+            <input type="hidden" name="Name" value="@Model.Username" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <h3>Потребителско име: @Html.DisplayFor(m => m.Username)</h3>
+            </div>
+            <div class="form-floating">
+                <div class="form-group">
+                    <label>Роли на потребителя (само тези, които са маркирани)</label>
+                    <select asp-for="RoleNames" asp-items="@items" class="form-control">
+                       
+                    </select>
+                    <label>За да добавите роля на избраният потребител кликнете на нея и натиснете продължи.</label>
+                    <label>За да премахнете роля на избраният потребител задръжте бутонът Ctrl на клавиатурата и натиснете на ролята която искате да премахнете, след като е успешно размаркирана, натиснете продължи.</label>
+                </div>
+            </div>
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="col-4">
+                    <button id="login-submit" type="submit" class="btn btn-primary btn-block">Продължи</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+    </div>
+</div>

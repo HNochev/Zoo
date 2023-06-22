@@ -1,0 +1,132 @@
+﻿@using Microsoft.AspNet.Identity
+@using Zoo.Core.Models.Admin
+@using System.Web
+@model AdminPayTicketModel
+
+@{
+    ViewBag.Title = $"Билет за принтиране";
+    var random = new Random();
+    var imageNumber = random.Next(1, 5);
+    var imagePath = $"/img/ticketBackground{imageNumber}.jpg";
+}
+
+<link rel="stylesheet" href="/css/print.css" media="print">
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="callout callout-info">
+                    <h5><i class="fas fa-info"></i> Забележка:</h5>
+                    Тази страница е подобрена за принтиране. Натиснете бутона долу, за да принтирате.
+                </div>
+
+                <div class="invoice p-3 mb-3" style="position: relative;">
+                    <div class="image-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('@imagePath'); background-repeat: no-repeat; background-size: cover; opacity: 0.2;"></div>
+                    <div class="row">
+                        <div class="col-12">
+                            <h4>
+                                <i class="fas fa-solid fa-paw"></i> Зоологическа градина - град Хасково
+                                <small class="float-right">Дата: @DateTime.Now.ToString("f")</small>
+                            </h4>
+                        </div>
+
+                    </div>
+
+                    <div class="row invoice-info">
+                        <div class="col-sm-4 invoice-col">
+                            От
+                            <address>
+                                <strong>Зоологическа градина</strong><br>
+                                град Хасково, парк Кенана<br>
+                                Телефон: 089 448 3877<br>
+                                Имейл: info@haskovozoo.bg
+                            </address>
+                        </div>
+
+                        <div class="col-sm-4 invoice-col">
+                            За
+                            <address>
+                                <strong>@Model.FirstName @Model.LastName</strong><br>
+                                Вашият имейл: @Model.User.Email<br>
+                                Потребителско име: @Model.User.UserName
+                            </address>
+                        </div>
+
+                        <div class="col-sm-4 invoice-col">
+                            <b>Информация</b><br>
+                            <b>Код:</b> @Model.UniqueCode<br>
+                            <b>Посещение на:</b> @Model.Date.ToString("D")<br>
+                            <b>Потребителско име обслужил Ви служител:</b><br />
+                            <p class="text-center">@User.Identity.Name</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-12 table-responsive">
+                            <table class="table table-striped" style="background-color: transparent;">
+                                <thead>
+                                    <tr>
+                                        <th>Кoличество</th>
+                                        <th>Вид на билета</th>
+                                        <th>Код за заплащане</th>
+                                        <th>Единична цена</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>@Model.Count</td>
+                                        <td>@Model.Ticket.Type</td>
+                                        <td>@Model.UniqueCode</td>
+                                        <td>@Model.Ticket.Price лева</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-6">
+                        </div>
+
+                        <div class="col-6">
+                            <p class="lead">Заплатено на: @(Model.PayedOn.HasValue ? Model.PayedOn.Value.ToString("f") : DateTime.Now.ToString("f"))</p>
+                            <div class="table-responsive">
+                                <table class="table" style="background-color: transparent;">
+                                    <tbody>
+                                        <tr>
+                                            <th>Общо за плащане:</th>
+                                            <td>@(Model.Count * Model.Ticket.Price) лева</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row no-print">
+                        <div class="col-6">
+                        </div>
+                        <div class="col-3 offset-3 d-flex justify-content-center">
+                            <button type="button" class="btn btn-success btn-block" onclick="printInvoice()">
+                                <i class="fas fa-print"></i>
+                                Print
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    function printInvoice() {
+        window.print();
+    }
+</script>

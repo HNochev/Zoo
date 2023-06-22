@@ -1,0 +1,47 @@
+﻿@page
+
+@{
+    ViewBag.Title = "Чат";
+}
+
+<div class="container">
+    <div class="col-md-12">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="product-title">Чат</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-2" hidden>User</div>
+                    <div class="col-4"><input type="text" id="userInput" value="@User.Identity.Name" disabled hidden /></div>
+                </div>
+                <div><h4 class="text-center">Място за чат с останалите потребители на нашият уебсайт.</h4></div>
+                <div><h5 class="text-center bg-warning">Това е място за неофициална комуникация между нашите потребители, който и да се представя за част от екипа лъже. Единственият начин за контакт с нашият екип са имейлите дадени в раздел контакти на сайта.</h5></div>
+                <div><h5 class="text-center bg-info">При зададен въпрос към нас в работно време ще се постараем да отговорим, ако не получите отговор, задайте въпроса си по имейл.</h5></div>
+                <br />
+                <table class="row col-md-6 offset-3">
+                    <th class="col-md-2"><div class=" text-center">Съобщение:</div></th>
+                    <th class="col-md-8"><div><input class="form-control" id="messageInput" /></div></th>
+                    <th class="col-md-2"><div class="text-center">
+                        <input class="btn btn-primary text-center" type="button" id="sendButton" value="Изпрати" />
+                    </div></th>
+                </table>
+                </div>
+                <div class="row" hidden>&nbsp;</div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <hr />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <ul id="messagesList" style="word-wrap: break-word; max-width: 100%;"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>

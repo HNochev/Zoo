@@ -1,0 +1,31 @@
+﻿@using Zoo.Core.Models.Downloads
+@model DownloadDeleteModel
+
+@{
+    ViewData["Title"] = "Изтриване на файл";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card card-danger">
+            <div class="card-header">
+                <h3 class="card-title">Сигурен ли сте, че искате да изтриете файлът със заглавие:</h3>
+            </div>
+            <form method="post">
+                <div class="card-body">
+                    <div class="form-group text-center">
+                        <h3 class="text-center" asp-for="Title"><b>@Model.FileName</b></h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="Downloads" asp-action="All" class="btn btn-secondary">Отказ</a>
+                    <button type="submit" class="btn btn-danger float-right">Изтрий</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

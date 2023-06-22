@@ -1,0 +1,54 @@
+﻿@using Zoo.Core.Models.Contacts
+@model ContactAddFormModel
+
+@{
+    ViewData["Title"] = "Редактирай контакт";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card card-warning">
+            <div class="card-header">
+                <h3 class="card-title">Редактирай контакт</h3>
+            </div>
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="FullName"></label>
+                        <input asp-for="FullName" class="form-control" placeholder="Редактирайте име и фамилия. Например: Иван Иванов">
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" class="form-control" placeholder="Редактирайте имейл">
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PhoneNumber"></label>
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Редактирайте телефонен номер">
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Position"></label>
+                        <input asp-for="Position" class="form-control" placeholder="Редактирайте длъжност в предприятието">
+                        <span asp-validation-for="Position" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="UsernameInWebsite"></label>
+                        <input asp-for="UsernameInWebsite" class="form-control" placeholder="Редактирайте потребителско име в сайта, ако има акаунт">
+                        <span asp-validation-for="UsernameInWebsite" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="Contacts" asp-action="All" class="btn btn-secondary">Отказ</a>
+                    <button type="submit" class="btn btn-warning float-right">Редактирай</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

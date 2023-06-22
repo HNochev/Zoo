@@ -1,0 +1,57 @@
+﻿@using Zoo.Core.Models.Photos
+@model PhotoAddFormModel
+
+@{
+    ViewData["Title"] = "Добави снимка";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Добави снимка</h3>
+            </div>
+            <form enctype="multipart/form-data" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="Description"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Добавете описание към снимката ако има нужда от такова"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label asp-for="IsAuthor" class="control-label"></label>
+                            <input asp-for="IsAuthor" class="form-control">
+                            <span asp-validation-for="IsAuthor" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="DateOfPicture" class="control-label"></label>
+                            <input asp-for="DateOfPicture" class="form-control" value="">
+                            <span asp-validation-for="DateOfPicture" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="FileUpload.PhotoFile" class="control-label"></label>
+                            <input asp-for="FileUpload.PhotoFile" type="file" class="form-control">
+                            <span asp-validation-for="FileUpload.PhotoFile" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="UserMessage"></label>
+                        <textarea asp-for="UserMessage" class="form-control" rows="2" placeholder="Напишете тук поясненията си за администратор"></textarea>
+                        <span asp-validation-for="UserMessage" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="Animals" asp-action="All" class="btn btn-secondary">Отказ</a>
+                    <input asp-page-handler="Upload" class="btn btn-primary float-right" type="submit" value="Качи снимка">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

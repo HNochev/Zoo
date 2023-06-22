@@ -1,0 +1,48 @@
+﻿@using Zoo.Core.Models.News
+@model NewsPaginationModel
+
+@{
+    ViewBag.Title = "Новини";
+}
+
+@if (!Model.News.Any())
+{
+    <h2 class="text-center">В сайта все още няма новини!</h2>
+}
+else
+{
+    <div class="row">
+        @foreach (var news in Model.News)
+        {
+            <div class="col-md-10 offset-md-1">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="product-title"><a asp-controller="News" asp-action="Details" asp-route-id="@news.Id">@news.Title</a></h3>
+                    </div>
+                    <div class="card-body">
+                        <article>
+                            <header class="entry-header">
+                                <meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+                                <div class="entry-thumbnail d-flex justify-content-center">
+                                    <img class="img-fluid" src="@news.ImgUrl" alt="Снимка">
+                                </div>
+                                <b class="entry-date right">Публикувана на: @news.Date.ToString("D")</b>
+                            </header>
+                            <div class="entry-content">
+                                <p class="short-content">
+                                    @news.Description
+                                </p>
+                                <a asp-controller="News" asp-action="Details" asp-route-id="@news.Id" class="btn btn-primary float-right">Прочети още</a>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <paging page-no="Model.PageNo"
+        page-size="Model.PageSize"
+        total-records="Model.TotalRecords"
+        page-size-dropdown-items="2-5-10">
+    </paging>
+}

@@ -1,0 +1,36 @@
+﻿@using Zoo.Core.Models.Users
+@model UserEditModel
+@{
+    ViewData["Title"] = "Редактирай потребител";
+}
+
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <form id="edit" method="post">
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control" aria-required="true" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" aria-required="true" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="row">
+                    <a asp-area="RoleManage" asp-controller="UserRole" asp-action="ManageUsers" class="btn btn-primary">Назад</a>
+                    <button id="login-submit" type="submit" class="btn btn-warning float-right">Редактирай</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

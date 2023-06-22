@@ -1,0 +1,82 @@
+﻿@using Zoo.Core.Models.AnimalFeedings
+@using Microsoft.AspNetCore.Identity
+@using Zoo.Core.Constants
+@using Zoo.Infrastructure.Data.Models
+@model IEnumerable<FeedingListingModel>
+
+@inject SignInManager<WebsiteUser> SignInManager
+@inject UserManager<WebsiteUser> UserManager
+
+@{
+    ViewBag.Title = "Публични хранения на животните";
+}
+
+@if (!Model.Any())
+{
+    <h2 class="text-center">Все още няма добавени хранения на животните!</h2>
+}
+else
+{
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">График на хранeнията</h3>
+                </div>
+
+                <div class="card-body table-responsive p-0">
+                    <table class="table table-hover text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>Описание</th>
+                                <th>Час на провеждане</th>
+                                <th>Продължителност</th>
+                                @if (this.User.IsInRole(UserConstants.Administrator) || this.User.IsInRole(UserConstants.Moderator))
+                                {
+                                    <th>Активно</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var feeding in Model)
+                            {
+                                @if (feeding.IsActive)
+                                {
+                                    <tr>
+                                        <td><a asp-controller="AnimalFeedings" asp-action="Details" asp-route-id="@feeding.Id">@feeding.Title</a></td>
+                                        <td>@feeding.HourOfEating.ToShortTimeString()</td>
+                                        <td>@feeding.Duration</td>
+                                        @if (this.User.IsInRole(UserConstants.Administrator) || this.User.IsInRole(UserConstants.Moderator))
+                                        {
+                                            <td>@(feeding.IsActive ? "Да" : "Не")</td>
+                                        }
+                                    </tr>
+                                }
+                                else
+                                {
+                                    @if (this.User.IsInRole(UserConstants.Administrator) || this.User.IsInRole(UserConstants.Moderator))
+                                    {
+                                        <tr class="table-info">
+                                            <td><a asp-controller="AnimalFeedings" asp-action="Details" asp-route-id="@feeding.Id">@feeding.Title</a></td>
+                                            <td>@feeding.HourOfEating.ToShortTimeString()</td>
+                                            <td>@feeding.Duration</td>
+                                            @if (this.User.IsInRole(UserConstants.Administrator) || this.User.IsInRole(UserConstants.Moderator))
+                                            {
+                                                 <td>@(feeding.IsActive ? "Да" : "Не")</td>
+                                            }
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+}
+<div class="text-center">
+    <a asp-controller="Tickets" asp-action="All"><img class="img-fluid" src="~/img/BuyTickets.jpg" width="70%" alt="Банер"></a>
+</div>

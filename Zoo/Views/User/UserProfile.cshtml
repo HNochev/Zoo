@@ -1,0 +1,222 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Zoo.Core.Constants
+@using Zoo.Core.Models.Users
+@using Zoo.Infrastructure.Data.Models
+
+@inject SignInManager<WebsiteUser> SignInManager
+@inject UserManager<WebsiteUser> UserManager
+@model UserDetailsModel
+
+@{
+    ViewBag.Title = $"Профилът на {Model.Username}";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+
+                <div class="card card-primary card-outline">
+                    <div class="card-body box-profile">
+                        <h3 class="profile-username text-center">@Model.Username</h3>
+                        <p class="text-muted text-center">@(Model.Role == null ? "Потребител" : Model.Role)</p>
+                        <ul class="list-group list-group-unbordered mb-3">
+                            <li class="list-group-item">
+                                <b>Качени снимки:</b> <a class="float-right">@Model.Photos.Where(x => x.IsApproved).Count()</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Коментари за снимки:</b> <a class="float-right">@Model.PhotoComments.Count</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Коментари за новини:</b> <a class="float-right">@Model.NewsComments.Count</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Имейл на потребителя</h3>
+                        </div>
+                        <div class="card-body">
+                            <strong><i class="far fa-file-alt mr-1"></i>@Model.Email</strong>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Имейл на потребителя</h3>
+                        </div>
+                        <div class="card-body text-center">
+                            <strong>За да видите имейла трябва да <a asp-area="Identity" asp-page="/Account/Login">влезте</a> в профила си или да се <a asp-area="Identity" asp-page="/Account/Register">регистрирате</a>.</strong>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header p-2">
+                        <ul class="nav nav-pills">
+                            @if (@Model.Username == User.Identity.Name)
+                            {
+                                <li class="nav-item"><a class="nav-link" href="#activity" data-toggle="tab">Опции</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#card" data-toggle="tab">История на моите билети</a></li>
+                            }
+                            <li class="nav-item"><a class="nav-link active" href="#timeline" data-toggle="tab">Профил</a></li>
+                            @*                            <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Settings</a></li>
+                            *@
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+                            @if (@Model.Username == User.Identity.Name)
+                            {
+                                <div class="tab-pane" id="activity">
+                                    <table class="table text-center">
+                                        <thead>
+                                            <tr>
+                                                <th><a class="nav-link text-dark" asp-controller="User" asp-action="MyPhotos" asp-route-id="">Всички мои снимки</a></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                                <div class="tab-pane" id="card">
+                                    @if (this.User.IsInRole(UserConstants.Administrator) || this.User.IsInRole(UserConstants.Moderator))
+                                    {
+                                        <h3 class="text-center">Вие сте част от екипа на Зоологическа градина - гр. Хасково, не се нуждаете от билети. </h3>
+                                    }
+                                    else if (Model.BuyedTickets.Count() <= 0)
+                                    {
+                                        <h2 class="text-center">Нямате закупени билети!</h2>
+                                    }
+                                    else
+                                    {
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th>Име</th>
+                                                    <th>Брой билети</th>
+                                                    <th>Вид билет</th>
+                                                    <th>Дата</th>
+                                                    <th>Пълна цена</th>
+                                                    <th>Уникален номер за заплащане</th>
+                                                    <th>Заплатен</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var ticket in Model.BuyedTickets)
+                                                {
+                                                    <tr class="@(ticket.Payed ? "table-success" : ticket.Date < DateTime.Today ? "table-danger" : "table-warning")">
+                                                        <td class="text-center align-middle">@ticket.FirstName @ticket.LastName</td>
+                                                        <td class="text-center align-middle">@ticket.Count</td>
+                                                        <td class="text-center align-middle">@ticket.Ticket.Type</td>
+                                                        <td class="text-center align-middle">@ticket.Date.ToString("dd.MM.yyyy")</td>
+                                                        <td class="text-center align-middle">@(ticket.Ticket.Price * ticket.Count) лв.</td>
+                                                        @if(ticket.Payed)
+                                                        {
+                                                            <td class="text-center align-middle"><a asp-controller="Admin" asp-action="PrintTicket" asp-route-id="@ticket.Id" class="btn btn-sm btn-success"><b>@ticket.UniqueCode<b></a></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="text-center align-middle"><b>@ticket.UniqueCode<b></td>
+                                                        }
+                                                        <td class="text-center align-middle">@(ticket.Payed ? "Да" : "Не")</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                            <h5 class="text-center">Показани записи: @Model.BuyedTickets.Count()</h5>
+                                            <table class="table text-center col-md-6 offset-md-3">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Цветово кодиране</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="table-success">
+                                                        <th scope="row">Заплатен билет</th>
+                                                    </tr>
+                                                    <tr class="table-warning">
+                                                        <th scope="row">Все още не заплатен билет</th>
+                                                    </tr>                                                        
+                                                    <tr class="table-danger">
+                                                        <th scope="row">Не заплатен и изтекъл запис</th>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                    }
+                                </div>
+                            }
+
+                            <div class="tab-pane active text-center" id="timeline">
+                                @if (this.User.Identity.Name == Model.Username)
+                                {
+                                    <h3>Добре дошли във Вашият профил!</h3>
+                                }
+                                else
+                                {
+                                    <h3>Добре дошли в профила на @Model.Username!</h3>
+                                }
+                            </div>
+
+                            @*<div class="tab-pane" id="settings">
+                                <form class="form-horizontal">
+                                <div class="form-group row">
+                                <label for="inputName" class="col-sm-2 col-form-label">Name</label>
+                                <div class="col-sm-10">
+                                <input type="email" class="form-control" id="inputName" placeholder="Name">
+                                </div>
+                                </div>
+                                <div class="form-group row">
+                                <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+                                <div class="col-sm-10">
+                                <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+                                </div>
+                                </div>
+                                <div class="form-group row">
+                                <label for="inputName2" class="col-sm-2 col-form-label">Name</label>
+                                <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputName2" placeholder="Name">
+                                </div>
+                                </div>
+                                <div class="form-group row">
+                                <label for="inputExperience" class="col-sm-2 col-form-label">Experience</label>
+                                <div class="col-sm-10">
+                                <textarea class="form-control" id="inputExperience" placeholder="Experience"></textarea>
+                                </div>
+                                </div>
+                                <div class="form-group row">
+                                <label for="inputSkills" class="col-sm-2 col-form-label">Skills</label>
+                                <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputSkills" placeholder="Skills">
+                                </div>
+                                </div>
+                                <div class="form-group row">
+                                <div class="offset-sm-2 col-sm-10">
+                                <div class="checkbox">
+                                <label>
+                                <input type="checkbox"> I agree to the <a href="#">terms and conditions</a>
+                                </label>
+                                </div>
+                                </div>
+                                </div>
+                                <div class="form-group row">
+                                <div class="offset-sm-2 col-sm-10">
+                                <button type="submit" class="btn btn-danger">Submit</button>
+                                </div>
+                                </div>
+                                </form>
+                                </div>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

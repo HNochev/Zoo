@@ -1,0 +1,52 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Zoo.Core.Constants
+@using Zoo.Core.Models.AnimalFeedings
+@using Zoo.Infrastructure.Data.Models
+
+@model FeedingDetailsModel
+@inject SignInManager<WebsiteUser> SignInManager
+@inject UserManager<WebsiteUser> UserManager
+
+@{
+    ViewBag.Title = "Информация за публичното хранене";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="product-title"><a asp-controller="AnimalFeedings" asp-action="Details" asp-route-id="@Model.Id">@Model.Title</a></h3>
+            </div>
+            <div class="card-body">
+                <article>
+                    <div class="entry-content">
+                        <h2> Хранене на животното: <a asp-controller="Animals" asp-action="Details" asp-route-id="@Model.Animal.Id">@Model.Animal.AnimalName</a></h2>
+                        <div class="row">
+                            <h4 class="col-md-6"> Час на започване: @Model.HourOfEating.ToShortTimeString()</h4>
+                            <h4 class="col-md-6"> Продължителност: @Model.Duration мин.</h4>
+                        </div>
+                        <div class="short-content" style="white-space: pre-line;">
+                            <span>@Html.Raw(@Model.Description)</span>
+                        </div>
+                        @if (!@Model.IsActive)
+                        {
+                            <h5 class="text-center">Неактивно понеже животното не е достъпно за наблюдение от посетителите!</h5>
+                        }
+                    </div>
+                    @if (this.User.IsInRole(UserConstants.Administrator) || this.User.IsInRole(UserConstants.Moderator))
+                    {
+                        <a asp-controller="AnimalFeedings" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger float-left">Изтрий</a>
+                        <a asp-controller="AnimalFeedings" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning float-right">Редактирай</a>
+                    }
+                </article>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-center">
+    <a asp-controller="Tickets" asp-action="All"><img class="img-fluid" src="~/img/BuyTickets.jpg" width="60%" alt="Банер"></a>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

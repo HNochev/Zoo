@@ -1,0 +1,117 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Zoo.Core.Constants
+@using Zoo.Core.Models.Photos
+@using Zoo.Infrastructure.Data.Models
+
+@model PhotoDetailsModel
+@inject SignInManager<WebsiteUser> SignInManager
+@inject UserManager<WebsiteUser> UserManager
+
+@{
+    ViewData["Title"] = "Информация за снимка";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Информация за снимка на животното - <a asp-controller="Animals" asp-action="Details" asp-route-id="@Model.VehicleId">@Model.Vehicle.AnimalName</a></h3>
+            </div>
+            <div class="card-body">
+                <div class="text-center">
+                    <a asp-controller="Photos" asp-action="Details" asp-route-id="@Model.Id">
+                        <img class="img-fluid" src="@Model.ImgUrlFromDatabase" alt="Снимка">
+                    </a>
+                </div>
+            </div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="text-center" colspan="2">
+                            <div>
+                                Животно: <b class="@Model.Vehicle.AnimalCondition.ClassColor"><a asp-controller="Animals" asp-action="Details" asp-route-id="@Model.VehicleId">@Model.Vehicle.AnimalName</a></b>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" colspan="2">
+                            Описание на снимката: <b>@(Model.Description == null ? "Няма описание" : @Model.Description)</b>
+                        </td>
+                    </tr>
+                    <tr class="col-12">
+                        <td class="col-6 text-center" colspan="1">
+                            Дата на заснемане: <b>@Model.DateOfPicture.ToString("D")</b>
+                        </td>
+                        <td class="col-6 text-center" colspan="1">
+                            Автор: <b><a asp-controller="User" asp-action="UserProfile" asp-route-id="@Model.UserId">@Model.User.UserName</a></b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" colspan="2">
+                            <b class="text-lightblue">@(Model.IsAuthor ? "Тази снимка е заснета и е публикувана от автора на тази публикация." : "Тази снимка не е заснета от автора на публикацията, тя е публикувана със зананието на човекът който я е заснел.")</b>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="card-body">
+                <a asp-controller="Animals" asp-action="Details" asp-route-id="@Model.VehicleId" class="btn btn-secondary">Назад</a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-warning float-right"> Върни се на началната страница</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 text-center">
+    </div>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fa fa-comments"></i>
+                    Всички Коментари <b>@Model.PhotoComments.Count</b>
+                </h3>
+            </div>
+            @if (Model.PhotoComments.Count == 0)
+            {
+                <h2 class="text-center">Няма коментари!</h2>
+            }
+            else
+            {
+                @foreach (var comment in Model.PhotoComments)
+                {
+                    <div>
+                        <blockquote>
+                            <small>Автор: <cite title="Source Title"><a asp-controller="User" asp-action="UserProfile" asp-route-id="@UserManager.Users.Where(x => x.UserName == comment.User.UserName).Select(x => x.Id).First()">@comment.User.UserName</a></cite></small>
+                            <p>@comment.Content</p>
+                            <small>Публикуван на: <cite title="Source Title">@comment.Date.ToString("f")</cite></small>
+                            @if (this.User.IsInRole(UserConstants.Administrator) || this.UserManager.GetUserId(User) == comment.User.Id || this.User.IsInRole(UserConstants.Moderator))
+                            {
+                                <a asp-controller="PhotoComments" asp-action="Delete" asp-route-id="@comment.Id" class="btn btn-danger float-right">Изтрий</a>
+                                <a asp-controller="PhotoComments" asp-action="Edit" asp-route-id="@comment.Id" class="btn btn-warning float-right">Редактирай</a>
+                            }
+                            @if (comment.LastEditedOn != null)
+                            {
+                                <br>
+
+                                <small>Последна редакция на: <cite title="Source Title">@comment.LastEditedOn.Value.ToString("f")</cite></small>
+                            }
+                        </blockquote>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    @if (this.SignInManager.IsSignedIn(User))
+    {
+        <partial name="_PartialAddPhotoComment" />
+    }
+    else
+    {
+        <div class="col-md-10 offset-md-1">
+            <h3 class="text-center">За да коментирате, <a asp-area="Identity" asp-page="/Account/Login">влезте</a> в профила си или се <a asp-area="Identity" asp-page="/Account/Register">регистрирайте</a>.</h3>
+        </div>
+    }
+</div>
+
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

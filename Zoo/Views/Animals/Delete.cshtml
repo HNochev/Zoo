@@ -1,0 +1,33 @@
+﻿@using Zoo.Core.Models.Animals
+@model AnimalDeleteModel
+
+@{
+    ViewData["Title"] = "Изтриване на животно";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card card-danger">
+            <div class="card-header">
+                <h3 class="card-title">Сигурен ли сте, че искате да изтриете животното:</h3>
+            </div>
+            <form method="post">
+                <div class="card-body">
+                    <div class="form-group text-center">
+                        <h3 class="text-center" asp-for="Title">@Model.AnimalName</h3>
+                        <h5 class="text-center @Model.AnimalsKind.ClassColor" asp-for="Title">Oт вид @Model.AnimalsKind.AnimalsKind</h5>
+                        <img class="img-fluid" src="@Model.ImgUrlFormDatabase" alt="Снимка">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="Vehicles" asp-action="All" class="btn btn-secondary">Отказ</a>
+                    <button type="submit" class="btn btn-danger float-right">Изтрий</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

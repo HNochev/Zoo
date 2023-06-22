@@ -1,0 +1,159 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Zoo.Core.Constants
+@using Zoo.Core.Models.Transports
+@using Zoo.Infrastructure.Data.Models
+
+@model IEnumerable<TransportListingModel>
+@inject UserManager<WebsiteUser> UserManager
+
+@{
+    ViewBag.Title = "Транспорт";
+}
+
+<div class="callout callout-info">
+    <h5 class="text-center"><i class="fas fa-info"></i> - Транспорт до зоологическа градина - град Хасково - <i class="fas fa-info"></i></h5>
+    Тук може да видите всички линии на транспорта в град Хасково, които водят до нашия зоопарк.
+    Може да разгледате подробности (като например часове на преминаване на превозно средство от съответната линия през
+    спирката на Зоологическа градина - град Хасково) за вяка една линия, като кликнете на нея. (Всички разписания за актуални)
+</div>
+
+@if (!Model.Any())
+{
+    <h2 class="text-center">Няма добавени транспортни линии водещи до Зоологическа градина - град Хасково!</h2>
+}
+else
+{
+    <div class="callout callout-warning">
+        <h2 class="text-center"><i class="fas fa-exclamation-triangle"></i> - Кликнете на линията, за която искате повече информация - <i class="fas fa-exclamation-triangle"></i></h2>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Транспортни линии</h3>
+                </div>
+
+                <div class="card-body">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                @if (this.User.IsInRole(UserConstants.Administrator) || this.User.IsInRole(UserConstants.Moderator))
+                                {
+                                    <th class="text-center" style="width: 15%">Номер Линия</th>
+                                    <th class="" style="width: 60%">Маршрут</th>
+                                    <th class="text-center" style="width: 25%">Активирай</th>
+                                }
+                                else
+                                {
+                                    <th class="text-center" style="width: 15%">Номер Линия</th>
+                                    <th class="" style="width: 85%">Маршрут</th>
+                                    <th style="width: 0%"></th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var line in Model)
+                            {
+                                <tr data-widget="expandable-table" aria-expanded="false" class="@line.TransportLineType.ClassColor">
+                                    <td class="align-middle"><h3 class="text-center">@line.LineNumber </h3></td>
+                                    <td class="align-middle @(line.IsActive ? "" : "bg-secondary")">@line.ShortRouteDescription @(line.IsActive ? "" : " (неактивна)")</td>
+                                    <td class="text-center align-middle">
+                                        @if (this.User.IsInRole(UserConstants.Administrator) || this.User.IsInRole(UserConstants.Moderator))
+                                        {
+                                            @if (line.IsActive)
+                                            {
+                                                <a asp-controller="Transports" asp-action="ActivateDisactivateLine" asp-route-id="@line.Id" class="btn btn-danger">Направи неактивна</a>
+                                            }
+                                            else
+                                            {
+                                                <a asp-controller="Transports" asp-action="ActivateDisactivateLine" asp-route-id="@line.Id" class="btn btn-success">Активирай линията</a>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                                <tr class="expandable-body d-none">
+                                    <td colspan="5">
+                                        @if (this.User.IsInRole(UserConstants.Administrator) || this.User.IsInRole(UserConstants.Moderator))
+                                        {
+                                            <div class="float-right">
+                                                <a asp-controller="Transports" asp-action="Edit" asp-route-id="@line.Id" class="btn btn-warning text-center">Редакция информацията</a>
+                                            </div>
+                                        }
+                                        <br>
+                                        <h5 class="text-center">Пълен маршрут на линията:</h5>
+                                        <p class="text-center">@line.FullRouteDescription</p>
+                                        <div class="row">
+                                            <div class="col">
+                                                <p>
+                                                    Линията се обслубжва от: <b class="@line.TransportLineType.ClassColor">@line.TransportLineType.VehicleTypeDescription</b>
+                                                </p>
+                                                <p>
+                                                    Интервал на движение: <b>@line.Interval мин.</b>
+                                                </p>
+                                            </div>
+                                            <div class="col">
+                                                <p>
+                                                    Първият курс на линията потегля в: <b>@line.StartingHour.ToString("t") ч.</b>
+                                                </p>
+                                                <p>
+                                                    Последният курс на линията потегля в: <b>@(line.FinishHour.AddMinutes(-line.Interval).ToString("t")) ч.</b>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <h2 class="text-center">Разписание спирка Зоологическа градина - град Хасково:</h2>
+                                        <p class="text-center">
+                                            @for (var i = line.StartingHour; i < line.FinishHour; i = i.AddMinutes(line.Interval))
+                                            {
+                                                var j = i.AddMinutes(line.MinutesDistanceFromFirstStop);
+
+                                                if (j.TimeOfDay >= DateTime.Now.TimeOfDay && j.TimeOfDay <= DateTime.Now.AddMinutes(line.Interval).TimeOfDay)
+                                                {
+                                                    <b class="table-success">@(i.AddMinutes(line.MinutesDistanceFromFirstStop).ToString("t")) (Следващо минаване на транспортното средство през спирката)</b>
+                                                }
+                                                else
+                                                {
+                                                    <b>@(i.AddMinutes(line.MinutesDistanceFromFirstStop).ToString("t"))</b>
+                                                }
+                                            }
+                                        </p>
+                                        <img class="img-fluid" src="@line.ImgUrlFormDatabase">
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <table class="table text-center col-md-6 offset-md-3">
+        <thead>
+            <tr>
+                <th scope="col">Цветово кодиране - Линията се обслужва от:</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="table-warning">
+                <th scope="row">Електически автобуси</th>
+            </tr>
+            <tr class="table-primary">
+                <th scope="row">Тролейбуси</th>
+            </tr>
+            <tr class="table-secondary">
+                <th scope="row">Дизелови автобуси</th>
+            </tr>
+            <tr class="table-success">
+                <th scope="row">Метанови автобуси</th>
+            </tr>
+            <tr class="table-info">
+                <th scope="row">Газови автобуси</th>
+            </tr>
+            <tr class="table-danger">
+                <th scope="row">Трамваи</th>
+            </tr>
+        </tbody>
+    </table>
+}

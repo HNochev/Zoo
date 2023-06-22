@@ -1,0 +1,85 @@
+﻿@using Zoo.Core.Models.Transports
+@model TransportEditFormModel
+
+@{
+    ViewData["Title"] = "Промени транспорт";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card card-warning">
+            <div class="card-header">
+                <h3 class="card-title">Редактирай транспорт</h3>
+            </div>
+            <form enctype="multipart/form-data" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="LineNumber"></label>
+                        <input asp-for="LineNumber" class="form-control" placeholder="Добавете номер на линия, която добавяте">
+                        <span asp-validation-for="LineNumber" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="ShortRouteDescription"></label>
+                            <input asp-for="ShortRouteDescription" class="form-control" placeholder="Добавете кратко описание на линията (Пример: ЗММ - Автогара - ж. к. Болярово)">
+                            <span asp-validation-for="ShortRouteDescription" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="TransportLineTypeId" class="control-label"></label>
+                            <select asp-for="TransportLineTypeId" class="form-control" onchange="yesNoCheck(this);">
+                                @foreach (var lineType in Model.TransportLineTypeModels)
+                                {
+                                    <option id="test" class="@lineType.ClassColor" value="@lineType.Id">@lineType.VehicleTypeDescription</option>
+                                }
+                            </select>
+                            <span asp-validation-for="TransportLineTypeId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label asp-for="FullRouteDescription" class="control-label"></label>
+                        <input asp-for="FullRouteDescription" class="form-control" placeholder="Добавете пълното описание на линията (Пример: ЗММ - КАТ - Гара - Окръжна болница - Автогара......)">
+                        <span asp-validation-for="FullRouteDescription" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="StartingHour" class="control-label"></label>
+                            <input asp-for="StartingHour" class="form-control">
+                            <span asp-validation-for="StartingHour" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="FinishHour" class="control-label"></label>
+                            <input asp-for="FinishHour" class="form-control">
+                            <span asp-validation-for="FinishHour" class="text-danger"></span>
+                        </div>
+                    </div>                    
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Interval" class="control-label"></label>
+                            <input asp-for="Interval" class="form-control">
+                            <span asp-validation-for="Interval" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="MinutesDistanceFromFirstStop" class="control-label"></label>
+                            <input asp-for="MinutesDistanceFromFirstStop" class="form-control">
+                            <span asp-validation-for="MinutesDistanceFromFirstStop" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label asp-for="FileUpload.PhotoFile" class="control-label"></label>
+                        <input asp-for="FileUpload.PhotoFile" type="file" class="form-control">
+                        <span asp-validation-for="FileUpload.PhotoFile" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="Transports" asp-action="All" class="btn btn-secondary">Отказ</a>
+                    <button type="submit" class="btn btn-warning float-right">Редактирай</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

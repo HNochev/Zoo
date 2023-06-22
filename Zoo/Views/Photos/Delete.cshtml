@@ -1,0 +1,36 @@
+﻿@using Zoo.Core.Constants
+@using Zoo.Core.Models.Photos
+@model PhotoDeleteModel
+
+@{
+    ViewData["Title"] = "Изтриване на снимка";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card @(@User.IsInRole(UserConstants.Administrator) ? "card-dark" : "card-danger")">
+            <div class="card-header">
+                <h3 class="card-title">Сигурен ли сте, че искате да изтриете тази снимка:</h3>
+            </div>
+            <form method="post">
+                <div class="card-body">
+                    <div class="form-group text-center">
+                        <img class="img-fluid" src="@Model.ImgUrlFormDatabase" alt="Снимка">
+                        <h3 class="text-center" asp-for="Title">Публикувана от: @Model.User.UserName</h3><br>
+                        <h5 class="text-center text-green">Със съобщение към администратор: @Model.UserMessage</h5><br>
+                        <h5 class="text-center" asp-for="Date">Публикувана на: @Model.UploadedOn.ToString("f")</h5><br>
+                        <h5 class="text-center" asp-for="Date">Заснето животно: @Model.AnimalKind</h5><br>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="Animals" asp-action="All" class="btn btn-secondary">Отказ</a>
+                    <button type="submit" class="btn @(@User.IsInRole(UserConstants.Administrator) ? "btn-dark" : "btn-danger") float-right">Изтрий</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

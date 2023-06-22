@@ -1,0 +1,32 @@
+﻿@using Zoo.Core.Models.Tickets
+@model TicketDeleteModel
+
+@{
+    ViewData["Title"] = "Премахване на вид билет";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card card-danger">
+            <div class="card-header">
+                <h3 class="card-title">Сигурен ли сте, че искате да премахнете този вид билет от списъка с билети?</h3>
+            </div>
+            <form method="post">
+                <div class="card-body">
+                    <div class="form-group text-center">
+                        <h5 class="text-center" asp-for="Title">Име и кратко описание: <b>@Model.Type</b></h5><br>
+                        <h5 class="text-center" asp-for="Date">Цена: <b>@Model.Price лв.</b></h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="Tickets" asp-action="All" class="btn btn-danger">Не</a>
+                    <button type="submit" class="btn btn-success float-right">Да</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

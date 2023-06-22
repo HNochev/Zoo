@@ -1,0 +1,61 @@
+﻿@using Zoo.Core.Models.AnimalFeedings
+@model FeedingAddFormModel
+
+@{
+    ViewData["Title"] = "Добави хранене";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Добави хранене</h3>
+            </div>
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="AnimalId" class="control-label"></label>
+                        <select asp-for="AnimalId" class="form-control">
+                            @foreach (var animal in Model.Animals)
+                            {
+                                <option value="@animal.Id">@animal.AnimalName</option>
+                            }
+                        </select>
+                        <span asp-validation-for="AnimalId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Title"></label>
+                        <input asp-for="Title" class="form-control" placeholder="Добавете кратко заглавие за храненето">
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="HourOfEating"></label>
+                            <input asp-for="HourOfEating" class="form-control" placeholder="Добавете имейл">
+                            <span asp-validation-for="HourOfEating" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Duration"></label>
+                            <input asp-for="Duration" class="form-control" placeholder="Добавете телефонен номер">
+                            <span asp-validation-for="Duration" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description"></label>
+                        <textarea asp-for="Description" id="richtextarea" class="form-control" rows="10" placeholder="Добавете информация за храненето което добавяте"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="AnimalFeedings" asp-action="All" class="btn btn-secondary">Отказ</a>
+                    <button type="submit" class="btn btn-primary float-right">Добави</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

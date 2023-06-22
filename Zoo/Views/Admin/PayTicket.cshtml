@@ -1,0 +1,43 @@
+﻿@using Zoo.Core.Models.Admin
+@model AdminPayTicketModel
+
+@{
+    ViewData["Title"] = "Закупуване на билет";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card card-success">
+            <div class="card-header">
+                <h3 class="card-title">Сигурен ли сте, че искате да заплатите този/тези билети:</h3>
+            </div>
+            <form method="post">
+                <div class="card-body">
+                    <div class="form-group text-center">
+                        <h2 class="text-center">Информация за заявения билет</h2>
+                        <h5 class="text-center">Тип на билета: <b>@Model.Ticket.Type</b></h5>
+                        <h5 class="text-center">Единична цена: <b>@Model.Ticket.Price лв.</b></h5>
+                        <br />
+                        <h3 class="text-center">Пълна цена за заплащане: <b>@(Model.Ticket.Price * Model.Count) лв.</b></h3>
+                        <br />
+                        <h5 class="text-center">Име и фамилия на заплащащия: <b>@Model.FirstName @Model.LastName</b></h5>
+                        <h5 class="text-center">Заявена дата: <b>@Model.Date.ToString("D")</b></h5>
+                        <h5 class="text-center">Брой билети: <b>@Model.Count</b></h5>
+                        <br />
+                        <h3 class="text-center">Уникален номер за заплащане: <b>@Model.UniqueCode</b></h3>
+                        <br />
+                        <h5 class="timeline-header">Билета е заявен от потребител: <a asp-controller="User" asp-action="UserProfile" asp-route-id="@Model.UserId"><b>@Model.User.UserName</b></a></h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="Admin" asp-action="TicketRequests" class="btn btn-secondary">Назад</a>
+                    <button type="submit" class="btn btn-success float-right">Заплати</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

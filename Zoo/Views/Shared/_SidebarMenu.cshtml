@@ -1,0 +1,248 @@
+﻿@using Zoo.Core.Constants
+
+@if (this.User.IsInRole(UserConstants.Administrator))
+{
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <!-- Brand Logo -->
+    <a href="/" class="brand-link">
+            <img src="~/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+            <span class="brand-text font-weight-light">Админ панел</span>
+        </a>
+
+        <!-- Sidebar -->
+    <div class="sidebar">
+            <!-- Sidebar user (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="info">
+                    <a class="d-block text-center">Добре дошли в <br>администраторския панел, <br><b>@this.User.Identity?.Name</b></a>
+                </div>
+            </div>
+
+            <!-- Sidebar Menu -->
+        <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <!-- Add icons to the links using the .nav-icon class
+                         with font-awesome or any other icon font library -->
+                <li class="nav-header">Опции</li>
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="News" asp-action="Add" class="nav-link">
+                            <i class="nav-icon far fa-calendar-alt"></i>
+                            <p>
+                                Добави новина
+                                <span class="badge badge-info right"></span>
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="Animals" asp-action="Add" class="nav-link">
+                            <i class="nav-icon fas fa-solid fa-paw"></i>
+                            <p>
+                                Добави животно
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="Admin" asp-action="ApprovePhotos" class="nav-link">
+                            <i class="nav-icon far fa-image"></i>
+                            <p>
+                                Снимки за одобряване
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="Contacts" asp-action="Add" class="nav-link">
+                            <i class="nav-icon far fa-address-card"></i>
+                            <p>
+                                Добавяне на контакти
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="Tickets" asp-action="Add" class="nav-link">
+                            <i class="nav-icon fas fa-ticket-alt"></i>
+                            <p>
+                                Добавяне на билет
+                            </p>
+                        </a>
+                    </li>                    
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="Transports" asp-action="Add" class="nav-link">
+                            <i class="nav-icon fas fa-bus"></i>
+                            <p>
+                                Добавяне на транспорт
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="Downloads" asp-action="AddPDF" class="nav-link">
+                            <i class="nav-icon fas fa-file-pdf"></i>
+                            <p>
+                                Добавяне на PDF
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="AnimalFeedings" asp-action="Add" class="nav-link">
+                            <i class="nav-icon fas fa-utensils"></i>
+                            <p>
+                                Добавяне на хранене
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="Admin" asp-action="TicketRequests" class="nav-link">
+                            <i class="nav-icon fas fa-clipboard-list"></i>
+                            <p>
+                                Заявени билети
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="RoleManage" asp-controller="UserRole" asp-action="ManageUsers" class="nav-link">
+                            <i class="nav-icon fas fa-user-cog"></i>
+                            <p>
+                                Управление на роли
+                            </p>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- /.sidebar-menu -->
+    </div>
+        <!-- /.sidebar -->
+</aside>
+}
+else if (this.User.IsInRole(UserConstants.Moderator))
+{
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <!-- Brand Logo -->
+    <a href="/" class="brand-link">
+            <img src="~/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+            <span class="brand-text font-weight-light">Модератор панел</span>
+        </a>
+
+        <!-- Sidebar -->
+    <div class="sidebar">
+            <!-- Sidebar user (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="info">
+                    <a class="d-block text-center">Добре дошли в <br>модераторския панел, <br><b>@this.User.Identity?.Name</b></a>
+                </div>
+            </div>
+
+            <!-- Sidebar Menu -->
+        <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <!-- Add icons to the links using the .nav-icon class
+                         with font-awesome or any other icon font library -->
+                <li class="nav-header">Опции</li>
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="News" asp-action="Add" class="nav-link">
+                            <i class="nav-icon far fa-calendar-alt"></i>
+                            <p>
+                                Добави новина
+                                <span class="badge badge-info right"></span>
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="Contacts" asp-action="Add" class="nav-link">
+                            <i class="nav-icon far fa-address-card"></i>
+                            <p>
+                                Добавяне на контакти
+                            </p>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- /.sidebar-menu -->
+    </div>
+        <!-- /.sidebar -->
+</aside>
+}
+else if (this.User.IsInRole(UserConstants.PhotoModerator))
+{
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <!-- Brand Logo -->
+    <a href="/" class="brand-link">
+            <img src="~/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+            <span class="brand-text font-weight-light">Фото-мод. панел</span>
+        </a>
+
+        <!-- Sidebar -->
+    <div class="sidebar">
+            <!-- Sidebar user (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="info">
+                    <a class="d-block text-center">Добре дошли в <br>фото-модераторския панел, <br><b>@this.User.Identity?.Name</b></a>
+                </div>
+            </div>
+
+            <!-- Sidebar Menu -->
+        <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <!-- Add icons to the links using the .nav-icon class
+                         with font-awesome or any other icon font library -->
+                <li class="nav-header">Опции</li>
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="Admin" asp-action="ApprovePhotos" class="nav-link">
+                            <i class="nav-icon far fa-image"></i>
+                            <p>
+                                Снимки за одобряване
+                            </p>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- /.sidebar-menu -->
+    </div>
+        <!-- /.sidebar -->
+</aside>
+}
+else if (this.User.IsInRole(UserConstants.Tickets))
+{
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <!-- Brand Logo -->
+    <a href="/" class="brand-link">
+            <img src="~/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+            <span class="brand-text font-weight-light">Отдел билети</span>
+        </a>
+
+        <!-- Sidebar -->
+    <div class="sidebar">
+            <!-- Sidebar user (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="info">
+                    <a class="d-block text-center">Добре дошли в разделът за <br>управление на билети, <br><b>@this.User.Identity?.Name</b></a>
+                </div>
+            </div>
+
+            <!-- Sidebar Menu -->
+        <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <!-- Add icons to the links using the .nav-icon class
+                         with font-awesome or any other icon font library -->
+                <li class="nav-header">Опции</li>
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="Tickets" asp-action="Add" class="nav-link">
+                            <i class="nav-icon fas fa-id-card"></i>
+                            <p>
+                                Добавяне на карта
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="Admin" asp-action="TicketRequests" class="nav-link">
+                            <i class="nav-icon fas fa-clipboard-list"></i>
+                            <p>
+                                Заявени карти
+                            </p>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- /.sidebar-menu -->
+    </div>
+        <!-- /.sidebar -->
+</aside>
+}

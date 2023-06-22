@@ -1,0 +1,188 @@
+﻿@using Zoo.Core.Models.Admin
+@model AdminPendingTicketsPaginationModel
+
+@{
+    ViewBag.Title = $"Потребители заявили билети";
+}
+
+@if (!Model.AllPendingTickets.Any())
+{
+    <div class="card-body text-center">
+        <h3 class="text-center">Няма никакви заявявани билети.</h3>
+    </div>
+}
+else
+{
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Всички заявени билети</h3>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="text-center bg-warning">Въведи кода издиктуван от клиента тук.</h3>
+                            <input type="text" id="searchInput" class="form-control" placeholder="Търси по Уникален номер за заплащане">
+                            <br>
+                            <table id="ticketTablePagination" class="table table-bordered">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th>Име</th>
+                                        <th>Фамилия</th>
+                                        <th>Брой билети</th>
+                                        <th>Вид билет</th>
+                                        <th>Дата</th>
+                                        <th>Пълна цена</th>
+                                        <th>Уникален номер за заплащане</th>
+                                        <th>Плащане</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var ticket in Model.AllPendingTickets)
+                                    {
+                                        <tr class="@(ticket.Payed ? "table-success" : ticket.Date < DateTime.Today ? "table-danger" : "table-warning")">
+                                            <td class="text-center align-middle">@ticket.FirstName</td>
+                                            <td class="text-center align-middle">@ticket.LastName</td>
+                                            <td class="text-center align-middle">@ticket.Count</td>
+                                            <td class="text-center align-middle">@ticket.Ticket.Type</td>
+                                            <td class="text-center align-middle">@ticket.Date.ToString("D")</td>
+                                            <td class="text-center align-middle">@(ticket.Ticket.Price * ticket.Count) лв.</td>
+                                            <td class="text-center align-middle"><b>@ticket.UniqueCode</b></td>
+                                            @if (ticket.Payed)
+                                            {
+                                                <td class="text-center">
+                                                    <a asp-controller="Admin" asp-action="PrintTicket" asp-route-id="@ticket.Id" class="btn btn-sm btn-primary">Билет</a>
+                                                </td>
+                                            }
+                                            else if (DateTime.Today <= ticket.Date && !ticket.Payed)
+                                            {
+                                                <td class="text-center">
+                                                    <a asp-controller="Admin" asp-action="PayTicket" asp-route-id="@ticket.Id" class="btn btn-sm btn-success">Заплати</a>
+                                                </td>
+                                            }
+                                            else if (DateTime.Today > ticket.Date && !ticket.Payed)
+                                            {
+                                                <td class="text-center">
+                                                    <a asp-controller="Admin" asp-action="Reject" asp-route-id="@ticket.Id" class="btn btn-sm btn-danger">Изтрий</a>
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            <table id="ticketTable" class="table table-bordered" style="display: none;">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th>Име</th>
+                                        <th>Фамилия</th>
+                                        <th>Брой билети</th>
+                                        <th>Вид билет</th>
+                                        <th>Дата</th>
+                                        <th>Пълна цена</th>
+                                        <th>Уникален номер за заплащане</th>
+                                        <th>Плащане</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var ticket in Model.AllPendingTicketsWithoutPagination)
+                                    {
+                                        <tr class="@(ticket.Payed ? "table-success" : ticket.Date < DateTime.Today ? "table-danger" : "table-warning")">
+                                            <td class="text-center align-middle">@ticket.FirstName</td>
+                                            <td class="text-center align-middle">@ticket.LastName</td>
+                                            <td class="text-center align-middle">@ticket.Count</td>
+                                            <td class="text-center align-middle">@ticket.Ticket.Type</td>
+                                            <td class="text-center align-middle">@ticket.Date.ToString("D")</td>
+                                            <td class="text-center align-middle">@(ticket.Ticket.Price * ticket.Count) лв.</td>
+                                            <td class="text-center align-middle"><b>@ticket.UniqueCode</b></td>
+                                            @if (ticket.Payed)
+                                            {
+                                                <td class="text-center">
+                                                    <a asp-controller="Admin" asp-action="PrintTicket" asp-route-id="@ticket.Id" class="btn btn-sm btn-primary">Билет</a>
+                                                </td>
+                                            }
+                                            else if (DateTime.Today <= ticket.Date && !ticket.Payed)
+                                            {
+                                                <td class="text-center">
+                                                    <a asp-controller="Admin" asp-action="PayTicket" asp-route-id="@ticket.Id" class="btn btn-sm btn-success">Заплати</a>
+                                                </td>
+                                            }
+                                            else if (DateTime.Today > ticket.Date && !ticket.Payed)
+                                            {
+                                                <td class="text-center">
+                                                    <a asp-controller="Admin" asp-action="Reject" asp-route-id="@ticket.Id" class="btn btn-sm btn-danger">Изтрий</a>
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <paging page-no="Model.PageNo"
+                            page-size="Model.PageSize"
+                            total-records="Model.TotalRecords"
+                            page-size-dropdown-items="5-10-50-100-500">
+                        </paging>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<h3 class="text-center">Всички записи: @Model.TotalRecords</h3>
+<div class="row justify-content-between">
+    <h5>Незаплатени активни заявки: @Model.AllPendingTicketsWithoutPagination.Where(x => x.Payed == false && x.Date >= DateTime.Today).Count()</h5>
+    <h5>Заплатени заявки: @Model.AllPendingTicketsWithoutPagination.Where(x => x.Payed == true).Count()</h5>
+    <h5>Незаплатени неактивни заявки: @Model.AllPendingTicketsWithoutPagination.Where(x => x.Payed == false && x.Date < DateTime.Today).Count()</h5>
+</div>
+<table class="table text-center col-md-6 offset-md-3">
+    <thead>
+        <tr>
+            <th scope="col">Цветово кодиране</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="table-success">
+            <th scope="row">Заплатен билет</th>
+        </tr>
+        <tr class="table-warning">
+            <th scope="row">Все още не заплатен билет</th>
+        </tr>
+        <tr class="table-danger">
+            <th scope="row">Не заплатен и изтекъл запис</th>
+        </tr>
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#searchInput').on('input', function() {
+            var searchTerm = $(this).val().toLowerCase().trim(); // Trim whitespace from the input
+
+            var tableRows = $('table#ticketTablePagination tbody tr, table#ticketTable tbody tr');
+
+            // Show/hide rows based on search term
+            tableRows.hide().filter(function() {
+                var uniqueCode = $(this).find('td:nth-child(7)').text().toLowerCase();
+                var isTableDanger = $(this).hasClass('table-danger');
+                var isTableSuccess = $(this).hasClass('table-success');
+
+                return uniqueCode.includes(searchTerm) && (!isTableDanger || searchTerm === '') && (!isTableSuccess || searchTerm === '');
+            }).show();
+
+            // Show/hide tables based on search term
+            var ticketTablePagination = $('table#ticketTablePagination');
+            var ticketTable = $('table#ticketTable');
+
+            if (searchTerm === '') {
+                ticketTablePagination.show();
+                ticketTable.hide();
+            } else {
+                ticketTablePagination.hide();
+                ticketTable.show();
+            }
+        });
+    });
+</script>

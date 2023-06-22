@@ -1,0 +1,66 @@
+﻿@using Zoo.Core.Models.Admin
+@model AdminPendingPhotosPaginationModel
+
+@{
+    ViewBag.Title = $"Снимки чакащи одобрение";
+}
+
+@if (!Model.AllPendingPhotos.Any())
+{
+    <div class="card-body text-center">
+        <h3 class="text-center">Няма снимки изчакващи за одобрение.</h3>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="timeline">
+                @foreach (var photo in Model.AllPendingPhotos)
+                {
+                    <div>
+                        <i class="fa fa-image"></i>
+                        <div class="timeline-item">
+                            <span class="time"><i class="fa fa-clock"></i> @photo.DateUploaded.ToString("f")</span>
+                            <h3 class="timeline-header">Публикувана от: <a asp-controller="User" asp-action="UserProfile" asp-route-id="@photo.UserId">@photo.User.UserName</a></h3>
+                            <div class="row timeline-body">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td class="col-4 align-middle">
+                                                <a asp-controller="Photos" asp-action="Details" asp-route-id="@photo.Id">
+                                                    <img class="img-fluid" src="@photo.ImgUrlFormDatabase" alt="Снимка">
+                                                </a>
+                                            </td>
+                                            <td class="col-7 align-middle">
+                                                <div class=""><b>Дата на заснемане:</b> @photo.DateOfPicture.ToString("D")</div><br />
+                                                <div class=""><b>Описание на снимката:</b> @photo.Description</div><br />
+                                                @if (photo.UserMessage != null)
+                                                {
+                                                    <div class="text-green"><b>Съобщение от <a asp-controller="User" asp-action="UserProfile" asp-route-id="@photo.UserId">@photo.User.UserName</a>:</b> @photo.UserMessage</div>
+                                                    <br />
+                                                }
+                                                <div class="text-lightblue">@(photo.IsAuthor ? "Тази снимка е заснета от автора на публикацията." : "Тази снимка не е заснета от автора на публикацията.")</div>
+                                            </td>
+                                            <td class="col-1 align-middle text-center">
+                                                <a asp-controller="Photos" asp-action="Details" asp-route-id="@photo.Id" class="btn btn-primary">Прегледай снимката</a><br /><br />
+                                                <a asp-controller="Admin" asp-action="Approve" asp-route-id="@photo.Id" class="btn btn-success">Одобри</a><br /><br />
+                                                <a asp-controller="Admin" asp-action="DisApprove" asp-route-id="@photo.Id" class="btn btn-danger">Отхвърли</a><br /><br />
+                                                <a asp-controller="Photos" asp-action="Delete" asp-route-id="@photo.Id" class="btn btn-dark">Изтриване</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <paging page-no="Model.PageNo"
+                page-size="Model.PageSize"
+                total-records="Model.TotalRecords"
+                page-size-dropdown-items="5-10-25">
+            </paging>
+        </div>
+    </div>
+}

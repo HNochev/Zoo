@@ -1,0 +1,32 @@
+﻿@using Zoo.Core.Models.Contacts
+@model ContactDeleteModel
+
+@{
+    ViewData["Title"] = "Премахване на контакт";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card card-danger">
+            <div class="card-header">
+                <h3 class="card-title">Сигурен ли сте, че искате да премахнете този контакт от списъка с контакти?</h3>
+            </div>
+            <form method="post">
+                <div class="card-body">
+                    <div class="form-group text-center">
+                        <h5 class="text-center" asp-for="Title">Име и фамилия: <b>@Model.FullName</b></h5><br>
+                        <h5 class="text-center" asp-for="Date">Длъжност в предприятието: <b>@Model.Position</b></h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="Contacts" asp-action="All" class="btn btn-danger">Не</a>
+                    <button type="submit" class="btn btn-success float-right">Да</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

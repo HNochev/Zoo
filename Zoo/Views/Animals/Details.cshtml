@@ -1,0 +1,198 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Zoo.Core.Constants
+@using Zoo.Core.Models.Animals
+@using Zoo.Infrastructure.Data.Models
+
+@model AnimalDetailsModel
+@inject SignInManager<WebsiteUser> SignInManager
+@inject UserManager<WebsiteUser> UserManager
+
+@{
+    ViewBag.Title = $"{@Model.AnimalName}";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card card-success">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="nav-icon fas fa-solid fa-paw"></i>
+                    Основна информация
+                    <i class="nav-icon fas fa-solid fa-paw"></i>
+                </h3>
+            </div>
+            <div class="card-body">
+                <img class="rounded-3 img-fluid col-md-8 offset-md-2" src="@Model.ImgUrlFormDatabase">
+                <dl class="row">
+                    <dt class="col-sm-6">Животно:</dt>
+                    <dd class="col-sm-6">@Model.AnimalName</dd>
+                    <dt class="col-sm-3">Вид:</dt>
+                    <dd class="col-sm-9 text-center @Model.AnimalsKind.ClassColor">@Model.AnimalsKind.AnimalsKind</dd>
+                    <dt class="col-sm-6">В зоопарка от:</dt>
+                    <dd class="col-sm-6">@Model.InZooSince.ToString("D")</dd>
+                    <dt class="col-sm-6">Брой на тези животни в зоопарка:</dt>
+                    <dd class="col-sm-6">@Model.Count</dd>
+                    <dt class="col-sm-3">Начин на хранене:</dt>
+                    <dd class="col-sm-9 text-center @Model.AnimalEatingType.ClassColor">@Model.AnimalEatingType.EatingTypeDescription</dd>
+                    <dt class="col-sm-3">Състояние:</dt>
+                    <dd class="col-sm-9 text-center @Model.AnimalCondition.ClassColor">@Model.AnimalCondition.ConditionDescription</dd>
+                    @if (Model.AnimalCondition.ClassColor != "table-success")
+                    {
+                        <dt class="col-sm-6">Животното се завръща отново в зоопарка на:</dt>
+                        @if (Model.InZooAgainFrom.HasValue && Model.InZooAgainFrom.Value >= DateTime.Today)
+                        {
+                            <dd class="col-sm-6">@Model.InZooAgainFrom.Value.ToString("D")</dd>
+                        }
+                        else
+                        {
+                            <dd class="col-sm-6">Скоро (не е уточнена дата). Може да ни попитате на дадените телефони и имейли за контакт.</dd>
+                        }
+                    }
+                    else
+                    {
+                        @if (Model.AnimalFeedings.Any())
+                        {
+                            <div class="card-body">
+                                <h3 class="text-center">
+                                    Публични хранения на животното:
+                                </h3>
+                            </div>
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>Описание</th>
+                                        <th>Час на провеждане</th>
+                                        <th>Продължителност</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var feeding in @Model.AnimalFeedings)
+                                    {
+                                        @if (feeding.IsActive)
+                                        {
+                                            <tr>
+                                                <td><a asp-controller="AnimalFeedings" asp-action="Details" asp-route-id="@feeding.Id">@feeding.Title</a></td>
+                                                <td>@feeding.HourOfEating.ToShortTimeString()</td>
+                                                <td>@feeding.Duration мин.</td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            <tr class="table-info">
+                                                <td><a asp-controller="AnimalFeedings" asp-action="Details" asp-route-id="@feeding.Id">@feeding.Title</a></td>
+                                                <td>@feeding.HourOfEating.ToShortTimeString()</td>
+                                                <td>@feeding.Duration мин.</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    }
+                    <div class="card-body">
+                        <h3 class="text-center">
+                            Допълнителна информация за животното:
+                        </h3>
+                    </div>
+                    <div class="col-sm-12">@Html.Raw(@Model.Description)</div>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    @if (this.User.IsInRole(UserConstants.Administrator))
+    {
+        <div class="col-md-4">
+            <div class="card card-warning">
+                <div class="card-header">
+                    <h5 class="text-center">
+                        Опции за редакция и изтриване
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="Animals" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning float-left">Редактирай</a>
+                    <a asp-controller="Animals" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger float-right">Изтрий</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-warning">
+            <div class="card-header">
+                <h5 class="text-center">
+                    Добавяне на снимка
+                </h5>
+            </div>
+            @if (this.SignInManager.IsSignedIn(User))
+            {
+                <div class="card-body text-center">
+                    <a asp-controller="Animals" asp-action="AddPhoto" asp-route-id="@Model.Id" class="btn btn-primary">Добави снимка</a><br>
+                    <b class="text-blue">Всеки потребител може да качва до 3 снимки, които се включват в опашката за одобрение.</b><br>
+                    <b class="text-blue">Ако вече имате 3 снимки изчакващи одобрение, моля да изчакате да бъдат одобрени за да можете да качвате отново. </b>
+                </div>
+            }
+            else
+            {
+                <div class="card-body text-center">
+                    <h3 class="text-center">За да можете да качвате фотографии, <a asp-area="Identity" asp-page="/Account/Login">влезте</a> в профила си или се <a asp-area="Identity" asp-page="/Account/Register">регистрирайте</a>.</h3>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+@if (!Model.PhotosForYear.Any())
+{
+    <div class="card-body text-center">
+        <h3 class="text-center">За това животно все още няма добавени от потребителите снимки.</h3>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="timeline">
+                @foreach (var photoYear in Model.PhotosForYear.DistinctBy(x => x.Year))
+                {
+                    <div class="time-label">
+                        <span class="bg-blue">@photoYear.Year <i class="fas fa-arrow-down"></i></span>
+                    </div>
+                    @foreach (var photo in photoYear.Photos)
+                    {
+                        <div>
+                            <i class="fa fa-image"></i>
+                            <div class="timeline-item">
+                                <span class="time"><i class="fa fa-clock"></i> @photo.DateUploaded.ToString("f")</span>
+                                <h3 class="timeline-header">Публикувана от <a asp-controller="User" asp-action="UserProfile" asp-route-id="@photo.UserId">@photo.User.UserName</a></h3>
+                                <div class="row timeline-body">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="col-4 align-middle">
+                                                    <a asp-controller="Photos" asp-action="Details" asp-route-id="@photo.Id">
+                                                        <img class="img-fluid" src="@photo.ImgUrlFormDatabase" alt="Снимка">
+                                                    </a>
+                                                </td>
+                                                <td class="col-7 align-middle">
+                                                    <div class=""><b>Дата на заснемане:</b> @photo.DateOfPicture.ToString("D")</div><br />
+                                                    <div class=""><b>Автор:</b> <a asp-controller="User" asp-action="UserProfile" asp-route-id="@photo.UserId">@photo.User.UserName</a></div>
+                                                </td>
+                                                <td class="col-1 align-middle">
+                                                    <a asp-controller="Photos" asp-action="Details" asp-route-id="@photo.Id" class="btn btn-primary float-right">Разгледай</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="time-label">
+                        <span class="bg-blue">@photoYear.Year <i class="fas fa-arrow-up"></i></span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}

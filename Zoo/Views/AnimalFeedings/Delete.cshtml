@@ -1,0 +1,33 @@
+﻿@using Zoo.Core.Models.AnimalFeedings
+@model FeedingDeleteModel
+
+@{
+    ViewData["Title"] = "Изтриване на хранене";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card card-danger">
+            <div class="card-header">
+                <h3 class="card-title">Сигурен ли сте, че искате да изтриете храненето:</h3>
+            </div>
+            <form method="post">
+                <div class="card-body">
+                    <div class="form-group text-center">
+                        <h2 class="text-center" asp-for="Title">@Model.Title</h3>
+                        <h5 class="text-center asp-for="Title">Oт час: @Model.HourOfEating.ToShortTimeString()</h5>
+                        <h5 class="text-center asp-for="Title">С продължителност: @Model.Duration мин.</h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="AnimalFeedings" asp-action="All" class="btn btn-secondary">Отказ</a>
+                    <button type="submit" class="btn btn-danger float-right">Изтрий</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

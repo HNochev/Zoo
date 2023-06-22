@@ -1,0 +1,26 @@
+﻿@using Zoo.Core.Models.News
+@model NewsCommentsModel
+
+<div class="col-md-10 offset-md-1">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Добави коментар</h3>
+        </div>
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label asp-for="Content"></label>
+                    <textarea asp-for="Content" class="form-control" rows="4" placeholder="Напишете коментара си тук"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary float-right">Напиши</button>
+                </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

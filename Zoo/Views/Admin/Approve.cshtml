@@ -1,0 +1,39 @@
+﻿@using Zoo.Core.Models.Admin
+@model AdminApproveDisapprovePhotoModel
+
+@{
+    ViewData["Title"] = "Одобри снимка";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card card-success">
+            <div class="card-header">
+                <h3 class="card-title">Сигурен ли сте, че искате да одобрите тази снимка:</h3>
+            </div>
+            <form method="post">
+                <div class="card-body">
+                    <div class="form-group text-center">
+                        <img class="img-fluid" src="@Model.ImgUrlFormDatabase" alt="Снимка">
+                        <h3 class="text-center" asp-for="Title">Публикувана от: @Model.User.UserName</h3><br>
+                        <h5 class="text-center text-green">Със съобщение към администратор: @Model.UserMessage</h5><br>
+                        <h5 class="text-center" asp-for="Date">Публикувана на: @Model.UploadedOn.ToString("f")</h5><br>
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <label asp-for="AdminMessage"></label>
+                    <textarea asp-for="AdminMessage" class="form-control" rows="2" placeholder="Напишете тук препоръки към потребителя."></textarea>
+                    <span asp-validation-for="AdminMessage" class="text-danger"></span>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="Admin" asp-action="ApprovePhotos" class="btn btn-secondary">Назад</a>
+                    <button type="submit" class="btn btn-success float-right">Одобри</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

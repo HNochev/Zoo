@@ -1,0 +1,134 @@
+﻿@using Zoo.Core.Models.Animals
+@model IEnumerable<AnimalListingModel>
+
+@{
+    ViewBag.Title = "Животни";
+}
+
+@if (!Model.Any())
+{
+    <h2 class="text-center">Все още няма добавени животни!</h2>
+}
+else
+{
+    @if (Model.Any(x => x.ClassColor != "table-primary" && x.ClassColor != "table-info" && x.ClassColor != "table-warning"))
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h5 class="text-center">Животни, които още сега може да видите в Зоопарк град Хасково</h5>
+                    </div>
+                    <div>
+                        <div id="example_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <table id="example" class="table table-bordered table-hover dataTable dtr-inline">
+                                        <thead>
+                                            <tr class="table-primary">
+                                                <th width="16%" tabindex="0" rowspan="1" colspan="1">Снимка</th>
+                                                <th tabindex="0" rowspan="1" colspan="1">Животно</th>
+                                                <th tabindex="0" rowspan="1" colspan="1">Брой</th>
+                                                <th tabindex="0" rowspan="1" colspan="1">В града от</th>
+                                                <th tabindex="0" rowspan="1" colspan="1">Брой снимки</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var animal in Model.Where(x => x.ClassColor != "table-primary" && x.ClassColor != "table-info" && x.ClassColor != "table-warning"))
+                                            {
+                                                <tr class="@animal.ClassColor">
+                                                    <td><img class="img-fluid img-thumbnail img-responsive" src="@animal.ImgUrlFormDatabase"></td>
+                                                    <td class="align-middle"><a asp-controller="Animals" asp-action="Details" asp-route-id="@animal.Id">@animal.AnimalName</a></td>
+                                                    <td class="align-middle">@animal.Count</td>
+                                                    <td class="align-middle">@animal.InZooSince.ToString("d")</td>
+                                                    <td class="align-middle">@animal.PhotosCount</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model.Any(x => x.ClassColor == "table-primary" || x.ClassColor == "table-info" || x.ClassColor == "table-warning"))
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-danger">
+                    <div class="card-header">
+                        <h5 class="text-center">Животни, които в момента не могат да бъдат разгледани в Зоопарк град Хасково</h5>
+                    </div>
+                    <div>
+                        <div id="example_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <table id="example" class="table table-bordered table-hover dataTable dtr-inline">
+                                        <thead>
+                                            <tr class="table-primary">
+                                                <th width="16%" tabindex="0" rowspan="1" colspan="1">Снимка</th>
+                                                <th tabindex="0" rowspan="1" colspan="1">Животно</th>
+                                                <th tabindex="0" rowspan="1" colspan="1">Брой</th>
+                                                <th tabindex="0" rowspan="1" colspan="1">В града от</th>
+                                                <th tabindex="0" rowspan="1" colspan="1">Брой снимки</th>
+                                                <th tabindex="0" rowspan="1" colspan="1">Отново в зоопарка на</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var animal in Model.Where(x => x.ClassColor == "table-primary" || x.ClassColor == "table-info" || x.ClassColor == "table-warning"))
+                                            {
+                                                <tr class="@animal.ClassColor">
+                                                    <td><img class="img-fluid img-thumbnail img-responsive" src="@animal.ImgUrlFormDatabase"></td>
+                                                    <td class="align-middle"><a asp-controller="Animals" asp-action="Details" asp-route-id="@animal.Id">@animal.AnimalName</a></td>
+                                                    <td class="align-middle">@animal.Count</td>
+                                                    <td class="align-middle">@animal.InZooSince.ToString("D")</td>
+                                                    <td class="align-middle">@animal.PhotosCount</td>
+                                                    <td class="align-middle">
+                                                        @if (animal.InZooAgainFrom.HasValue && animal.InZooAgainFrom.Value >= DateTime.Today)
+                                                        {
+                                                            @animal.InZooAgainFrom.Value.ToString("D")
+                                                        }
+                                                        else
+                                                        {
+                                                            <div>Скоро (не е уточнена дата)</div>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <h5 class="text-center">Показани записи: @Model.Count()</h5>
+    <table class="table text-center col-md-6 offset-md-3">
+        <thead>
+            <tr>
+                <th scope="col">Цветово кодиране</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="table-success">
+                <th scope="row">Животното може да бъде видяно в зоопарка</th>
+            </tr>
+            <tr class="table-primary">
+                <th scope="row">Зимуващо животно</th>
+            </tr>
+            <tr class="table-info">
+                <th scope="row">Животното е на визита в друг град</th>
+            </tr>
+            <tr class="table-warning">
+                <th scope="row">Животното отсъства поради друга причина</th>
+            </tr>
+        </tbody>
+    </table>
+}

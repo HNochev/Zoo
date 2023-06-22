@@ -1,0 +1,35 @@
+﻿@using Zoo.Core.Models.Tickets
+@model TicketEditFormModel
+
+@{
+    ViewData["Title"] = "Редактирай билет";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Редактирай наименованието на вида на билета</h3>
+            </div>
+            <form enctype="multipart/form-data" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="Type"></label>
+                        <textarea asp-for="Type" class="form-control" rows="2" placeholder="Добавете име и кратко описание на картата която добавяте"></textarea>
+                        <span asp-validation-for="Type" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="Tickets" asp-action="All" class="btn btn-secondary">Отказ</a>
+                    <input asp-page-handler="Upload" class="btn btn-primary float-right" type="submit" value="Добави">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

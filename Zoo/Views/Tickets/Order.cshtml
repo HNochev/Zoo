@@ -1,0 +1,73 @@
+﻿@using Zoo.Core.Models.Tickets
+@model TicketOrderFormModel
+
+@{
+    ViewData["Title"] = "Закупуване на билет оналйн";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Заявяване на билет онлайн</h3>
+            </div>
+            <form enctype="multipart/form-data" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <div class="form-group text-center">
+                        <h3 class="text-center">За да заявите Посиченият по-долу билет моля попълнете полетата.</h3><br>
+                        <h3 class="text-center bg-warning">При завършване на покупката ще Ви бъде генериран 4 цифрен код, който като продиктувате на касата на Зоологическа градина - гр. Хасково ще бъдете таксувани.</h3><br>
+                        <h3 class="text-center ">Моля имайте предвид, че може да направите само до 5 активни заявки за билети.</h3><br>
+                        <h5 class="text-center">Име на желаният билет: <b>@Model.Ticket.Type</b></h5>
+                        <h5 class="text-center">Единична цена: <b>@Model.Ticket.Price лв.</b></h5>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="TicketOwnerFirstName"></label>
+                            <input asp-for="TicketOwnerFirstName" class="form-control" placeholder="Добавете име">
+                            <span asp-validation-for="TicketOwnerFirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="TicketOwnerLastName"></label>
+                            <input asp-for="TicketOwnerLastName" class="form-control" placeholder="Добавете фамилия">
+                            <span asp-validation-for="TicketOwnerLastName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Count"></label>
+                            <input asp-for="Count" class="form-control" placeholder="Брой билети" oninput="calculateTotalPrice()">
+                            <span asp-validation-for="Count" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Date"></label>
+                            <input asp-for="Date" class="form-control" placeholder="Дата на посещение" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="Date" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="totalPrice">Очаквана цена:</label>
+                        <input id="totalPrice" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="Tickets" asp-action="All" class="btn btn-secondary">Отказ</a>
+                    <input asp-page-handler="Upload" class="btn btn-primary float-right" type="submit" value="Заяви">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculateTotalPrice() {
+        var pricePerTicket = @Model.Ticket.Price; // Replace with the actual price per ticket value
+        var count = parseInt(document.getElementById("Count").value) || 0;
+        var totalPrice = pricePerTicket * count;
+        document.getElementById("totalPrice").value = totalPrice.toFixed(2) + " лв.";
+    }
+</script>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

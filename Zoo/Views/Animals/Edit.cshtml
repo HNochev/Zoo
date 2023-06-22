@@ -1,0 +1,105 @@
+﻿@using Zoo.Core.Models.Animals
+@model AnimalEditFormModel
+
+@{
+    ViewData["Title"] = "Редактирай животно";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card card-warning">
+            <div class="card-header">
+                <h3 class="card-title">Редактирай животното - @Model.AnimalName</h3>
+            </div>
+            <form enctype="multipart/form-data" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="AnimalName"></label>
+                        <input asp-for="AnimalName" class="form-control" placeholder="Напишете какво животно добавяте">
+                        <span asp-validation-for="AnimalName" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Count"></label>
+                            <input asp-for="Count" class="form-control" placeholder="Брой на животните в зоопарка">
+                            <span asp-validation-for="Count" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="InZooSince" class="control-label"></label>
+                            <input asp-for="InZooSince" class="form-control">
+                            <span asp-validation-for="InZooSince" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="AnimalConditionId" class="control-label"></label>
+                            <select asp-for="AnimalConditionId" class="form-control" onchange="yesNoCheck(this);">
+                                @foreach (var animalCondition in Model.AnimalConditions)
+                                {
+                                    <option id="test" class="@animalCondition.ClassColor" value="@animalCondition.Id">@animalCondition.ConditionDescription</option>
+                                }
+                            </select>
+                            <span asp-validation-for="AnimalConditionId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="AnimalEatingTypeId" class="control-label"></label>
+                            <select asp-for="AnimalEatingTypeId" class="form-control">
+                                @foreach (var animalEating in Model.AnimalEatingTypes)
+                                {
+                                    <option class="@animalEating.ClassColor" value="@animalEating.Id">@animalEating.EatingTypeDescription</option>
+                                }
+                            </select>
+                            <span asp-validation-for="AnimalEatingTypeId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="AnimalsKindId" class="control-label"></label>
+                            <select asp-for="AnimalsKindId" class="form-control">
+                                @foreach (var animalKind in Model.AnimalKinds)
+                                {
+                                    <option class="@animalKind.ClassColor" value="@animalKind.Id">@animalKind.AnimalsKind</option>
+                                }
+                            </select>
+                            <span asp-validation-for="AnimalsKindId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group offset-md-3 col-md-6" id="ifYes" style="display: none;">
+                            <label asp-for="InZooAgainFrom" class="control-label"></label>
+                            <input asp-for="InZooAgainFrom" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                            <span asp-validation-for="InZooAgainFrom" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label asp-for="FileUpload.PhotoFile" class="control-label"></label>
+                        <input asp-for="FileUpload.PhotoFile" type="file" class="form-control">
+                        <span asp-validation-for="FileUpload.PhotoFile" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description"></label>
+                        <textarea asp-for="Description" id="richtextarea" class="form-control" rows="10" placeholder="Добавете информация за животното което добавяте"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="Animals" asp-action="All" class="btn btn-secondary">Отказ</a>
+                    <button type="submit" class="btn btn-warning float-right">Редактирай</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function yesNoCheck(that) {
+        var selectedOption = that.options[that.selectedIndex];
+        var selectedClass = selectedOption.className;
+        if (!selectedClass.includes("table-success")) {
+            document.getElementById("ifYes").style.display = "block";
+        } else {
+            document.getElementById("ifYes").style.display = "none";
+        }
+    }
+</script>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

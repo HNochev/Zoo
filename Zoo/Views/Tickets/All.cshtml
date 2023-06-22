@@ -1,0 +1,230 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Zoo.Core.Constants
+@using Zoo.Core.Models.Tickets
+@using Zoo.Infrastructure.Data.Models
+@model TicketPageModel
+
+@inject SignInManager<WebsiteUser> SignInManager
+@inject UserManager<WebsiteUser> UserManager
+
+@{
+    ViewBag.Title = "Билети";
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Билети онлайн</h3>
+                        </div>
+                        <div class="card-body">
+                            @if (this.User.IsInRole(UserConstants.Administrator) || this.User.IsInRole(UserConstants.Moderator))
+                            {
+                                <h3 class="text-center">Вие сте част от екипа на Зоологическа градина - гр. Хасково, не се нуждаете от билет, за да влезете. Точно затова опция за заявяване липсва за Вас.</h3>
+                            }
+                            else if (Model.BuyedTickets.Count() <= 0)
+                            {
+                                <h2 class="text-center">Нямате активни закупени билети!</h2>
+                            }
+                            else
+                            {
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th>Име</th>
+                                            <th>Фамилия</th>
+                                            <th>Брой билети</th>
+                                            <th>Вид билет</th>
+                                            <th>Дата</th>
+                                            <th>Пълна цена</th>
+                                            <th>Уникален номер за заплащане</th>
+                                            <th>Изтрий</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var ticket in Model.BuyedTickets)
+                                        {
+                                            <tr>
+                                                <td class="text-center align-middle">@ticket.FirstName</td>
+                                                <td class="text-center align-middle">@ticket.LastName</td>
+                                                <td class="text-center align-middle">@ticket.Count</td>
+                                                <td class="text-center align-middle">@ticket.Ticket.Type</td>
+                                                <td class="text-center align-middle">@ticket.Date.ToString("D")</td>
+                                                <td class="text-center align-middle">@(ticket.Ticket.Price * ticket.Count)</td>
+                                                <td class="text-center align-middle"><b>@ticket.UniqueCode</b></td>
+                                                @if (this.UserManager.GetUserId(this.User) == ticket.UserId)
+                                                {
+                                                    <td class="text-center">
+                                                        <a asp-controller="Tickets" asp-action="RejectTicket" asp-route-id="@ticket.Id" class="btn btn-sm btn-danger">Изтрий</a>
+                                                    </td>
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                <br />
+                                <h5 class="text-center">Може да видите цялата история на своите покупки на билети <a asp-controller="User" asp-action="UserProfile" asp-route-id="@(this.UserManager.GetUserId(this.User))">тук</a>. На раздел История на моите билети.</h5>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">Цени на билетите</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <h5>За деца и учащи от 0 до 18 годишна възраст входът в зоопарка е <span class="bg-success">безплатен</span></h5><br />
+                        <h5>Билетът за лица над 18 годишна възраст е на цена - <span class="bg-success">2.00 лева</span></h5><br />
+                        <h3>При закупуване на билет онлайн вие спестявате <span class="bg-success">50%</span> от цената на редовният билет.</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Билети онлайн</h3>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.Tickets.Count() <= 0)
+                        {
+                            <h2 class="text-center">Все още няма добавени видове билети!</h2>
+                        }
+                        else
+                        {
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th>Описание</th>
+                                        <th>Цена</th>
+                                        <th>Заяви</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var ticket in Model.Tickets)
+                                    {
+                                        <tr>
+                                            <td class="col-md-5 align-middle">@ticket.Type</td>
+                                            <td class="col-md-2 align-middle">@ticket.Price лв.</td>
+                                            @if (this.User.IsInRole(UserConstants.Administrator) || this.User.IsInRole(UserConstants.Tickets))
+                                            {
+                                                <td class="text-center align-middle col-4">
+                                                    <a asp-controller="Tickets" asp-action="Edit" asp-route-id="@ticket.Id" class="btn btn-sm btn-warning">Редактирай описанието</a>
+                                                    <a asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id" class="btn btn-sm btn-danger">Изтрий</a>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td class="text-center align-middle col-1">
+                                                    <a asp-controller="Tickets" asp-action="Order" asp-route-id="@ticket.Id" class="btn btn-sm btn-success">Заяви</a>
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="row">
+    <table class="table table-bordered col-md-6">
+        <thead>
+            <tr>
+                <th scope="col" colspan="2" class="text-center">ЛЯТНО работно време на Зоологическа градина - град Хасково</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><b>Понеделник</b></td>
+                <td class="text-center">10:00 - 16:00</td>
+            </tr>
+            <tr>
+                <td><b>Вторник</b></td>
+                <td class="text-center">8:00 - 18:00</td>
+            </tr>
+            <tr>
+                <td><b>Сряда</b></td>
+                <td class="text-center">8:00 - 18:00</td>
+            </tr>
+            <tr>
+                <td><b>Четвъртък</b></td>
+                <td class="text-center">8:00 - 18:00</td>
+            </tr>
+            <tr>
+                <td><b>Петък</b></td>
+                <td class="text-center">8:00 - 18:00</td>
+            </tr>
+            <tr>
+                <td><b>Събота</b></td>
+                <td class="text-center">7:00 - 20:00</td>
+            </tr>
+            <tr>
+                <td><b>Неделя</b></td>
+                <td class="text-center">7:00 - 20:00</td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-bordered col-md-6">
+        <thead>
+            <tr>
+                <th scope="col" colspan="2" class="text-center">ЗИМНО работно време на Зоологическа градина - град Хасково</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><b>Понеделник</b></td>
+                <td class="text-center">10:00 - 16:00</td>
+            </tr>
+            <tr>
+                <td><b>Вторник</b></td>
+                <td class="text-center">9:00 - 16:00</td>
+            </tr>
+            <tr>
+                <td><b>Сряда</b></td>
+                <td class="text-center">9:00 - 16:00</td>
+            </tr>
+            <tr>
+                <td><b>Четвъртък</b></td>
+                <td class="text-center">9:00 - 16:00</td>
+            </tr>
+            <tr>
+                <td><b>Петък</b></td>
+                <td class="text-center">9:00 - 16:00</td>
+            </tr>
+            <tr>
+                <td><b>Събота</b></td>
+                <td class="text-center">10:00 - 18:00</td>
+            </tr>
+            <tr>
+                <td><b>Неделя</b></td>
+                <td class="text-center">10:00 - 18:00</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<h5 class="text-center">На тази карта може да видите къде се намира Зоологическа градина - град Хасково.<br /> Зоопаркът разполага с безплатен паркинг на територията на парк Кенана.</h5>
+<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d16478.646412940652!2d25.52539928533336!3d41.95456272993996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14ad511b84f93f71%3A0x828e3b80bc9a08bd!2sHaskovo%20Zoo!5e1!3m2!1sen!2sbg!4v1684677736323!5m2!1sen!2sbg" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>

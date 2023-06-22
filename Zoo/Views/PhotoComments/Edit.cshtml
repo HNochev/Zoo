@@ -1,0 +1,31 @@
+﻿@using Zoo.Core.Models.PhotosComments
+@model PhotoCommentEditFormModel
+
+@{
+    ViewData["Title"] = "Редактирай коментар";
+}
+
+<div class="col-md-10 offset-md-1">
+    <div class="card card-warning">
+        <div class="card-header">
+            <h3 class="card-title">Редактирайте коментар</h3>
+        </div>
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label asp-for="Content"></label>
+                    <textarea asp-for="Content" class="form-control" rows="4" placeholder="Напишете коментара си тук"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-warning float-right">Редактирай</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,183 @@
+﻿@using Zoo.Core.Models.Home
+@model HomePageModel
+
+<a asp-controller="Tickets" asp-action="All"><img class="img-fluid" src="~/img/Banner2.jpg" width="100%" alt="Банер"></a>
+<br />
+<br />
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="text-center">Последни новини</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            @foreach (var news in Model.News)
+                            {
+                                <div class="row border border-primary">
+                                    <div class="col-md-3">
+                                        <a asp-controller="News" asp-action="Details" asp-route-id="@news.Id"><img class="img-fluid" src="@news.ImgUrl" width="100%" alt="Снимка"></a>
+                                    </div>
+                                    <div class="col-md-9" style="border-bottom:32px">
+                                        <div class="card-body">
+                                            <h5 class="text-center bg-success"><a asp-controller="News" asp-action="Details" asp-route-id="@news.Id">@news.Title</a></h5>
+                                            <p class="card-text">@news.Description <a asp-controller="News" asp-action="Details" asp-route-id="@news.Id" class="btn-sm btn-outline-success float-right">Прочети още</a></p>
+                                            <div class="row">
+                                                <p class="card-text"><small class="text-muted">@news.Date.ToString("D")</small></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        @if (Model.News.Count() <= 0)
+                        {
+                            <h3 class="text-center">Няма намерени новини</h3>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="row">
+    <div class="col-md-6 d-flex">
+        <div class="card card-primary flex-fill">
+            <div class="card-header">
+                <h3 class="text-center">График на храненията днес</h3>
+            </div>
+            <div class="card-body">
+                @if (!Model.Feedings.Any())
+                {
+                    <h3 class="text-center">Все още няма добавени хранения на животните!</h3>
+                }
+                else
+                {
+                    <table class="table table-hover table-bordered text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>Описание</th>
+                                <th>Час на провеждане</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var feeding in Model.Feedings)
+                            {
+                                @if (feeding.IsActive)
+                                {
+                                    <tr>
+                                        <td><a asp-controller="AnimalFeedings" asp-action="Details" asp-route-id="@feeding.Id">@feeding.Title</a></td>
+                                        <td class="text-center">@feeding.HourOfEating.ToShortTimeString()</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                }
+                <br /><h5 class="text-center">Може да видите пълната информация за графика на хранене на животните в <a asp-controller="AnimalFeedings" asp-action="All">раздел график хранения</a>.</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 d-flex">
+        <div class="card card-primary flex-fill">
+            <div class="card-header">
+                <h3 class="text-center">Работно време</h3>
+            </div>
+            <div class="card-body">
+                @{
+                    DateTime currentDate = DateTime.Now;
+                    DateTime startDate = new DateTime(2022, 4, 1);  // Replace with your desired start date
+                    DateTime endDate = new DateTime(2022, 10, 1);  // Replace with your desired end date
+                    bool showTable = currentDate.Month >= startDate.Month && currentDate.Month <= endDate.Month;
+                }
+
+                @if (showTable)
+                {
+                    <table class="table table-hover table-bordered col-md-12">
+                        <thead>
+                            <tr>
+                                <th scope="col" colspan="2" class="text-center">Работно време на Зоологическа градина - град Хасково</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>Понеделник</b></td>
+                                <td class="text-center">10:00 - 16:00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Вторник</b></td>
+                                <td class="text-center">8:00 - 18:00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Сряда</b></td>
+                                <td class="text-center">8:00 - 18:00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Четвъртък</b></td>
+                                <td class="text-center">8:00 - 18:00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Петък</b></td>
+                                <td class="text-center">8:00 - 18:00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Събота</b></td>
+                                <td class="text-center">7:00 - 20:00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Неделя</b></td>
+                                <td class="text-center">7:00 - 20:00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <table class="table table-hover table-bordered col-md-12">
+                        <thead>
+                            <tr>
+                                <th scope="col" colspan="2" class="text-center">Работно време на Зоологическа градина - град Хасково</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>Понеделник</b></td>
+                                <td class="text-center">10:00 - 16:00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Вторник</b></td>
+                                <td class="text-center">9:00 - 16:00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Сряда</b></td>
+                                <td class="text-center">9:00 - 16:00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Четвъртък</b></td>
+                                <td class="text-center">9:00 - 16:00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Петък</b></td>
+                                <td class="text-center">9:00 - 16:00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Събота</b></td>
+                                <td class="text-center">10:00 - 18:00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Неделя</b></td>
+                                <td class="text-center">10:00 - 18:00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+                <br /><h5 class="text-center">Може да видите пълното работно време и още информация в <a asp-controller="Tickets" asp-action="All">раздел билети</a>.</h5>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_MapPartial" />

@@ -1,0 +1,65 @@
+﻿@using Zoo.Core.Constants
+@using Zoo.Core.Models.Downloads
+@model IEnumerable<DownloadsListingModel>
+
+@{
+    ViewBag.Title = "За изтегляне";
+}
+
+@if (!Model.Any())
+{
+    <h2 class="text-center">Все още няма добавени файлове за изтегляне!</h2>
+}
+else
+{
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Файлове за нашите малки почитатели</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th>Име</th>
+                                        <th>Изтегли</th>
+                                        <th>Описание</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var download in Model)
+                                    {
+                                        <tr>
+                                            <td class="col-3 align-middle"><i class="nav-icon fas fa-file-pdf"></i> @download.FileName</td>
+                                            @if (this.User.IsInRole(UserConstants.Administrator))
+                                            {
+                                                <td class="text-center align-middle col-4">
+                                                    <a asp-controller="Downloads" asp-action="Download" asp-route-id="@download.Id" class="btn btn-sm btn-success">Изтегли</a>
+                                                    <a asp-controller="Downloads" asp-action="Edit" asp-route-id="@download.Id" class="btn btn-sm btn-warning">Редактирай инф.</a>
+                                                    <a asp-controller="Downloads" asp-action="Delete" asp-route-id="@download.Id" class="btn btn-sm btn-danger">Изтрий</a>
+                                                </td>
+                                                <td class="col-5 align-middle" style="word-wrap: break-word;min-width: 160px;max-width: 160px;">
+                                                        @download.Description
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td class="text-center align-middle col-1">
+                                                    <a asp-controller="Downloads" asp-action="Download" asp-route-id="@download.Id" class="btn btn-sm btn-success">Изтегли</a>
+                                                </td>
+                                                <td class="col-8 align-middle" style="word-wrap: break-word;min-width: 160px;max-width: 160px;">@download.Description</td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
